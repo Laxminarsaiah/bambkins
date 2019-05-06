@@ -1,6 +1,5 @@
 package com.lnragi.tools.bambkins;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -35,7 +34,8 @@ public class GenerateMavenProjectPanel extends JPanel {
 	private static final long serialVersionUID = 2349027912597242316L;
 	public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	Font font = new Font("Calibri", Font.BOLD, 14);
-	JPanel grpPanel, artifactPanel, templatePanel, targetPanel, buttonPanel, textAreaPanel, statusBarPanel;
+	JPanel grpPanel, artifactPanel, templatePanel, targetPanel, buttonPanel, textAreaPanel, statusBarPanel,
+			submitMainPanel;
 	JTextField groupId, artifactId, target;
 	JComboBox<String> artifactTemplate;
 	JButton submit;
@@ -47,18 +47,12 @@ public class GenerateMavenProjectPanel extends JPanel {
 
 	public GenerateMavenProjectPanel() {
 		JPanel inputPanel = new JPanel();
-		// inputPanel.setBackground(Color.white);
-//		inputPanel.setLayout(new GridLayout(1, 7));
-//		inputPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
-//		inputPanel.setBorder(BorderFactory.createTitledBorder(" Enter Details "));
 
 		JPanel outputPanel = new JPanel();
-		// outputPanel.setBackground(Color.white);
 		outputPanel.setLayout(new GridLayout(1, 100));
 		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
 		outputPanel.setBorder(BorderFactory.createTitledBorder("      [ OUTPUT ] "));
 		grpPanel = new JPanel();
-		// grpPanel.setBackground(Color.white);
 		grpPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		grpPanel.setBorder(BorderFactory.createTitledBorder(" ENTER GROUP ID "));
 		groupId = new JTextField(28);
@@ -66,7 +60,6 @@ public class GenerateMavenProjectPanel extends JPanel {
 		grpPanel.add(groupId);
 
 		artifactPanel = new JPanel();
-		// artifactPanel.setBackground(Color.white);
 		artifactPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		artifactPanel.setBorder(BorderFactory.createTitledBorder(" ENTER ARTIFACT ID "));
 		artifactId = new JTextField(28);
@@ -76,7 +69,6 @@ public class GenerateMavenProjectPanel extends JPanel {
 		templatePanel = new JPanel();
 		templatePanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		templatePanel.setBorder(BorderFactory.createTitledBorder(" SELECT TEMPLATE "));
-		// templatePanel.setBackground(Color.white);
 		String[] templates = new String[] { "-----Select-----", "maven-archetype-archetype",
 				"maven-archetype-j2ee-simple", "maven-archetype-plugin", "maven-archetype-plugin-site",
 				"maven-archetype-portlet", "maven-archetype-quickstart", "maven-archetype-simple",
@@ -88,35 +80,44 @@ public class GenerateMavenProjectPanel extends JPanel {
 		templatePanel.add(artifactTemplate);
 
 		targetPanel = new JPanel();
-		// targetPanel.setBackground(Color.white);
 		targetPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		targetPanel.setBorder(BorderFactory.createTitledBorder(" ENTER DESTINATION "));
 		target = new JTextField(28);
 		target.setToolTipText("Target directory is mandatory!!!");
 		targetPanel.add(target);
 
-		buttonPanel = new JPanel();
+		submitMainPanel = new JPanel();
+		submitMainPanel.setLayout(new GridLayout(2, 1));
+		submitMainPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
+		submitMainPanel.setBorder(BorderFactory.createTitledBorder("CLICK ME"));
+
+		statusBarPanel = new JPanel();
+		statusBarPanel.setLayout(new GridLayout(2, 100));
+		statusBarPanel.setPreferredSize(new Dimension(100, 20));
+
 		submit = new JButton("SUBMIT");
+		submit.setPreferredSize(new Dimension(30, 30));
+		submit.setBackground(Color.BLUE);
 		submit.setToolTipText("Starts Maven Project generation ");
-		// submit.setBackground(Color.BLUE);
 		submit.setActionCommand("mvngen");
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				generateMavenProject();
 			}
 		});
-		targetPanel.add(submit);
-		progressBar = new JProgressBar();
-		progressBar.setPreferredSize(new Dimension(100, 24));
 
-		targetPanel.add(progressBar,BorderLayout.PAGE_END);
+		progressBar = new JProgressBar();
+		progressBar.setPreferredSize(new Dimension(100, 25));
+		statusBarPanel.add(progressBar);
+
+		submitMainPanel.add(submit);
+		submitMainPanel.add(statusBarPanel);
+
 		textAreaPanel = new JPanel();
 		textAreaPanel.setPreferredSize(screenSize);
 		textArea = new JTextArea(25, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		//textArea.setBackground(new Color(128, 0, 128));
-		//textArea.setForeground(Color.WHITE);
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
 		textArea.setBorder(null);
 		textArea.setToolTipText("You can see console output here...");
@@ -131,6 +132,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 		inputPanel.add(artifactPanel);
 		inputPanel.add(templatePanel);
 		inputPanel.add(targetPanel);
+		inputPanel.add(submitMainPanel);
 		outputPanel.add(textAreaPanel);
 
 		setEnabled(true);

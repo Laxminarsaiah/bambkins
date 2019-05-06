@@ -1,5 +1,6 @@
 package com.lnragi.tools.bambkins;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -44,21 +45,14 @@ public class BuildMavenProjectPanel extends JPanel {
 
 	public BuildMavenProjectPanel() {
 		JPanel inputPanel = new JPanel();
-		// inputPanel.setBackground(Color.white);
-//		inputPanel.setLayout(new GridLayout(1, 7));
-//		inputPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
-//		inputPanel.setBorder(BorderFactory.createTitledBorder(" Enter Details "));
-
 		JPanel outputPanel = new JPanel();
-		// outputPanel.setBackground(Color.white);
 		outputPanel.setLayout(new GridLayout(1, 100));
 		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
 		outputPanel.setBorder(BorderFactory.createTitledBorder("      [ OUTPUT ] "));
 
 		targetPanel = new JPanel();
-		// targetPanel.setBackground(Color.white);
 		targetPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
-		targetPanel.setBorder(BorderFactory.createTitledBorder(" ENTER DESTINATION "));
+		targetPanel.setBorder(BorderFactory.createTitledBorder(" SELECT POM.XML LOCATION "));
 		target = new JTextField(100);
 		target.setToolTipText("Target directory is mandatory!!!");
 		targetPanel.add(target);
@@ -83,23 +77,35 @@ public class BuildMavenProjectPanel extends JPanel {
 		submit = new JButton("SUBMIT");
 		submit.setToolTipText("Starts Maven Project generation ");
 		submit.setBackground(Color.BLUE);
+		submit.setPreferredSize(new Dimension(30, 30));
 		submit.setActionCommand("mvngen");
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				buildMavenProject();
+				buildMavenProject(target);
 			}
 		});
 		targetPanel.add(submit);
+		
+		buttonPanel = new JPanel();
+		buttonPanel.setLayout(new GridLayout(2, 1));
+		buttonPanel.setBorder(BorderFactory.createMatteBorder(50, 8, 30, 8, Color.blue));
+		buttonPanel.setBorder(BorderFactory.createTitledBorder(" CLICK ME "));
+		
+		statusBarPanel = new JPanel();
+		statusBarPanel.setLayout(new GridLayout(2, 100));
+		statusBarPanel.setPreferredSize(new Dimension(100, 20));
+		
 		progressBar = new JProgressBar();
 		progressBar.setPreferredSize(new Dimension(100, 24));
-		targetPanel.add(progressBar);
+		statusBarPanel.add(progressBar);
+		buttonPanel.add(submit);
+		buttonPanel.add(statusBarPanel,BorderLayout.SOUTH);
+		
 		textAreaPanel = new JPanel();
 		textAreaPanel.setPreferredSize(screenSize);
 		textArea = new JTextArea(25, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		//textArea.setBackground(new Color(128, 0, 128));
-		//textArea.setForeground(Color.WHITE);
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
 		textArea.setBorder(null);
 		textArea.setToolTipText("You can see console output here...");
@@ -111,14 +117,16 @@ public class BuildMavenProjectPanel extends JPanel {
 		textAreaPanel.add(new JScrollPane(textArea));
 
 		inputPanel.add(targetPanel);
+		inputPanel.add(buttonPanel);
 		outputPanel.add(textAreaPanel);
+		
 		setEnabled(true);
 		setPreferredSize(screenSize);
 		add(inputPanel);
 		add(outputPanel);
 	}
 
-	protected void buildMavenProject() {
+	protected void buildMavenProject(JTextField target) {
 		String dest = target.getText();
 		if (dest.equals("")) {
 			JOptionPane.showMessageDialog(null, "Please select POM location", "Error:", JOptionPane.ERROR_MESSAGE);
