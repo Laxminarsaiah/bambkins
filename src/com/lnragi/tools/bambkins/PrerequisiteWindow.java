@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -53,7 +55,7 @@ public class PrerequisiteWindow extends JFrame {
 		setBounds(400, 150, 200, 200);
 		setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 4));
 		setIconImage(icon);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.);
 		setTitle("Checking for prerequisites...");
 		setVisible(true);
 		setAlwaysOnTop(true);

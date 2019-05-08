@@ -8,7 +8,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -24,16 +23,18 @@ public class HomeWindow extends JFrame {
 
 	public HomeWindow() {
 		initializeHomeWindow();
+		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.setBounds(10, 110, 20, 20);
 		tabbedPane.setBorder(BorderFactory.createMatteBorder(24, 6, 12, 6, Color.blue));
 		Font myFont1 = new Font("Calibri", Font.TYPE1_FONT, 14);
 		tabbedPane.setFont(myFont1);
-		tabbedPane.setBorder(BorderFactory.createTitledBorder("Build Ant/Maven Applications"));
+		tabbedPane.setBorder(BorderFactory.createTitledBorder("BUILD MAVEN/ANT APPLICATIONS"));
 		tabbedPane.add("Home", new HomePanel());
 		tabbedPane.add("Generate Maven Project", new GenerateMavenProjectPanel());
 		tabbedPane.add("Build Exists Maven Project", new BuildMavenProjectPanel());
 		tabbedPane.add("Build Ant Project", new BuildAntProjectPanel());
+		tabbedPane.add("Monitor", new MonitorPanel());
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 	}
 
@@ -45,7 +46,7 @@ public class HomeWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("BAMBKINS");
 		setVisible(true);
-		//setLocationRelativeTo(null);
+		// setLocationRelativeTo(null);
 		pack();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

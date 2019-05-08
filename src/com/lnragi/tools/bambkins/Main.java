@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
@@ -44,7 +45,7 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				new HomeWindow();
-				new PrerequisiteWindow();
+				new RunPreRequisites();
 			}
 		});
 		window.dispose();

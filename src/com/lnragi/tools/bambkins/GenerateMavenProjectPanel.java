@@ -1,5 +1,6 @@
 package com.lnragi.tools.bambkins;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -44,6 +46,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 	String line;
 	JTextArea textArea;
 	JProgressBar progressBar;
+	JLabel loadingLabel;
 
 	public GenerateMavenProjectPanel() {
 		JPanel inputPanel = new JPanel();
@@ -87,16 +90,17 @@ public class GenerateMavenProjectPanel extends JPanel {
 		targetPanel.add(target);
 
 		submitMainPanel = new JPanel();
-		submitMainPanel.setLayout(new GridLayout(2, 1));
-		submitMainPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
-		submitMainPanel.setBorder(BorderFactory.createTitledBorder("CLICK ME"));
+		submitMainPanel.setLayout(new GridLayout(1, 3));
+		// submitMainPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8,
+		// Color.blue));
+		// submitMainPanel.setBorder(BorderFactory.createTitledBorder("CLICK ME"));
 
 		statusBarPanel = new JPanel();
 		statusBarPanel.setLayout(new GridLayout(2, 100));
 		statusBarPanel.setPreferredSize(new Dimension(100, 20));
 
 		submit = new JButton("SUBMIT");
-		submit.setPreferredSize(new Dimension(30, 30));
+		submit.setPreferredSize(new Dimension(80, 40));
 		submit.setBackground(Color.BLUE);
 		submit.setToolTipText("Starts Maven Project generation ");
 		submit.setActionCommand("mvngen");
@@ -111,7 +115,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 		statusBarPanel.add(progressBar);
 
 		submitMainPanel.add(submit);
-		submitMainPanel.add(statusBarPanel);
+		// submitMainPanel.add(statusBarPanel);
 
 		textAreaPanel = new JPanel();
 		textAreaPanel.setPreferredSize(screenSize);
@@ -195,6 +199,9 @@ public class GenerateMavenProjectPanel extends JPanel {
 		}
 
 		public void run() {
+			loadingLabel = new JLabel();
+			loadingLabel.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+			submitMainPanel.add(loadingLabel,BorderLayout.EAST);
 			textArea.setText("");
 			submit.setEnabled(false);
 			submit.setText("HANG TIGHT");
@@ -218,8 +225,9 @@ public class GenerateMavenProjectPanel extends JPanel {
 				if (finishFlag == true) {
 					progressBar.setIndeterminate(false);
 					submit.setEnabled(true);
+					submitMainPanel.remove(loadingLabel);
 					submit.setText("COMPLETED!!!");
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 					submit.setText("SUBMIT");
 					ImageIcon icon = new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/ok1.png"));
 					JOptionPane.showMessageDialog(null, "BUILD PROCESS COMPLETED!!!", "SUCCESS:",
@@ -228,6 +236,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 			} catch (IOException e) {
 				progressBar.setIndeterminate(false);
 				submit.setEnabled(true);
+				submitMainPanel.remove(loadingLabel);
 				try {
 					submit.setText("FAILED!!!");
 					Thread.sleep(3000);

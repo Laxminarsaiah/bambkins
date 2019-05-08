@@ -18,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -42,6 +43,7 @@ public class BuildMavenProjectPanel extends JPanel {
 	String line;
 	JTextArea textArea;
 	JProgressBar progressBar;
+	JLabel loadingLabel;
 
 	public BuildMavenProjectPanel() {
 		JPanel inputPanel = new JPanel();
@@ -77,7 +79,7 @@ public class BuildMavenProjectPanel extends JPanel {
 		submit = new JButton("SUBMIT");
 		submit.setToolTipText("Starts Maven Project generation ");
 		submit.setBackground(Color.BLUE);
-		submit.setPreferredSize(new Dimension(30, 30));
+		submit.setPreferredSize(new Dimension(80, 40));
 		submit.setActionCommand("mvngen");
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -85,22 +87,23 @@ public class BuildMavenProjectPanel extends JPanel {
 			}
 		});
 		targetPanel.add(submit);
-		
+
 		buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(2, 1));
-		buttonPanel.setBorder(BorderFactory.createMatteBorder(50, 8, 30, 8, Color.blue));
-		buttonPanel.setBorder(BorderFactory.createTitledBorder(" CLICK ME "));
-		
+		buttonPanel.setLayout(new GridLayout(1, 1));
+		// buttonPanel.setBorder(BorderFactory.createMatteBorder(50, 8, 30, 8,
+		// Color.blue));
+		// buttonPanel.setBorder(BorderFactory.createTitledBorder(" CLICK ME "));
+
 		statusBarPanel = new JPanel();
 		statusBarPanel.setLayout(new GridLayout(2, 100));
 		statusBarPanel.setPreferredSize(new Dimension(100, 20));
-		
+
 		progressBar = new JProgressBar();
 		progressBar.setPreferredSize(new Dimension(100, 24));
 		statusBarPanel.add(progressBar);
 		buttonPanel.add(submit);
-		buttonPanel.add(statusBarPanel,BorderLayout.SOUTH);
-		
+		// buttonPanel.add(statusBarPanel, BorderLayout.SOUTH);
+
 		textAreaPanel = new JPanel();
 		textAreaPanel.setPreferredSize(screenSize);
 		textArea = new JTextArea(25, 146);
@@ -119,7 +122,7 @@ public class BuildMavenProjectPanel extends JPanel {
 		inputPanel.add(targetPanel);
 		inputPanel.add(buttonPanel);
 		outputPanel.add(textAreaPanel);
-		
+
 		setEnabled(true);
 		setPreferredSize(screenSize);
 		add(inputPanel);
@@ -150,6 +153,9 @@ public class BuildMavenProjectPanel extends JPanel {
 		}
 
 		public void run() {
+			loadingLabel = new JLabel();
+			loadingLabel.setIcon(new ImageIcon(BuildMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+			buttonPanel.add(loadingLabel);
 			textArea.setText("");
 			submit.setEnabled(false);
 			submit.setText("HANG TIGHT");
@@ -173,19 +179,21 @@ public class BuildMavenProjectPanel extends JPanel {
 				if (finishFlag == true) {
 					progressBar.setIndeterminate(false);
 					submit.setEnabled(true);
+					buttonPanel.remove(loadingLabel);
 					submit.setText("COMPLETED");
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 					submit.setText("SUBMIT");
 					ImageIcon icon = new ImageIcon(BuildMavenProjectPanel.class.getResource("/images/ok1.png"));
-					JOptionPane.showMessageDialog(null, "BUILD PROCESS COMPLETED", "SUCCESS",
-							JOptionPane.PLAIN_MESSAGE, icon);
+					JOptionPane.showMessageDialog(null, "BUILD PROCESS COMPLETED", "SUCCESS", JOptionPane.PLAIN_MESSAGE,
+							icon);
 				}
 			} catch (IOException e) {
 				progressBar.setIndeterminate(false);
 				submit.setEnabled(true);
+				buttonPanel.remove(loadingLabel);
 				try {
 					submit.setText("FAILED!!!");
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 					submit.setText("SUBMIT");
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
