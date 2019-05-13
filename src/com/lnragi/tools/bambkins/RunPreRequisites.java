@@ -75,7 +75,7 @@ public class RunPreRequisites {
 					textAreaLabel.setText("Ready to GO....");
 					Thread.sleep(3000);
 				} else if (error.size() > 0) {
-					textAreaLabel.setText("Install Required Appliactions and come back!!!");
+					textAreaLabel.setText("Install Required Appliactions.");
 					Thread.sleep(1000);
 				}
 			} catch (Exception e) {

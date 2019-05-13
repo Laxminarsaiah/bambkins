@@ -8,7 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -25,16 +25,20 @@ public class MonitorPanel extends JPanel {
 
 	public MonitorPanel() {
 		submitMainPanel = new JPanel();
-		submitMainPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
-		submitMainPanel.setBorder(BorderFactory.createTitledBorder(" Open putty here "));
+//		submitMainPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
+//		submitMainPanel.setBorder(BorderFactory.createTitledBorder(" Open putty here "));
 		submit = new JButton("Open");
-		submit.setPreferredSize(new Dimension(80, 40));
+		ImageIcon icon = new ImageIcon(PuttyWindow.class.getResource("/images/add_correction.png"));
+		submit.setIcon(icon);
+		submit.setPreferredSize(new Dimension(180, 40));
 		submit.setBackground(Color.BLUE);
 		submit.setActionCommand("mvngen");
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new PuttyWindow();
 			}
 		});
+		
 		submitMainPanel.add(submit);
 		add(submitMainPanel, BorderLayout.EAST);
 	}

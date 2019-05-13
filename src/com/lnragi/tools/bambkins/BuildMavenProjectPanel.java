@@ -79,7 +79,7 @@ public class BuildMavenProjectPanel extends JPanel {
 		submit = new JButton("SUBMIT");
 		submit.setToolTipText("Starts Maven Project generation ");
 		submit.setBackground(Color.BLUE);
-		submit.setPreferredSize(new Dimension(80, 40));
+		submit.setPreferredSize(new Dimension(180, 40));
 		submit.setActionCommand("mvngen");
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -153,12 +153,12 @@ public class BuildMavenProjectPanel extends JPanel {
 		}
 
 		public void run() {
-			loadingLabel = new JLabel();
-			loadingLabel.setIcon(new ImageIcon(BuildMavenProjectPanel.class.getResource("/images/loading-new.gif")));
-			buttonPanel.add(loadingLabel);
+//			loadingLabel = new JLabel();
+//			loadingLabel.setIcon(new ImageIcon(BuildMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+//			buttonPanel.add(loadingLabel);
+			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
 			textArea.setText("");
-			submit.setEnabled(false);
-			submit.setText("HANG TIGHT");
+			submit.setText("Please wait...");
 			textArea.append("BREATHE IN....., BREATHE OUT......\n");
 			progressBar.setIndeterminate(true);
 			ProcessBuilder probuilder = new ProcessBuilder(command);
@@ -178,8 +178,7 @@ public class BuildMavenProjectPanel extends JPanel {
 				}
 				if (finishFlag == true) {
 					progressBar.setIndeterminate(false);
-					submit.setEnabled(true);
-					buttonPanel.remove(loadingLabel);
+					submit.setIcon(null);
 					submit.setText("COMPLETED");
 					Thread.sleep(1000);
 					submit.setText("SUBMIT");
@@ -189,8 +188,7 @@ public class BuildMavenProjectPanel extends JPanel {
 				}
 			} catch (IOException e) {
 				progressBar.setIndeterminate(false);
-				submit.setEnabled(true);
-				buttonPanel.remove(loadingLabel);
+				submit.setIcon(null);
 				try {
 					submit.setText("FAILED!!!");
 					Thread.sleep(1000);

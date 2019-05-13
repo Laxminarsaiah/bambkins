@@ -81,7 +81,7 @@ public class BuildAntProjectPanel extends JPanel {
 		submit = new JButton("SUBMIT");
 		submit.setToolTipText("Starts Maven Project generation ");
 		submit.setBackground(Color.BLUE);
-		submit.setPreferredSize(new Dimension(80, 40));
+		submit.setPreferredSize(new Dimension(180, 40));
 		submit.setActionCommand("mvngen");
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -102,7 +102,7 @@ public class BuildAntProjectPanel extends JPanel {
 		statusBarPanel.setPreferredSize(new Dimension(100, 20));
 		statusBarPanel.add(progressBar);
 		buttonPanel.add(submit);
-		//buttonPanel.add(statusBarPanel, BorderLayout.SOUTH);
+		// buttonPanel.add(statusBarPanel, BorderLayout.SOUTH);
 
 		textAreaPanel = new JPanel();
 		textAreaPanel.setPreferredSize(screenSize);
@@ -130,7 +130,9 @@ public class BuildAntProjectPanel extends JPanel {
 
 	protected void cleanAllAntProject() {
 		if (target.getText().equals("")) {
-			target.setText("D:\\act_work\\act_agm\\SAP-AGMBranchesforcheck-in_14032019\\uds\\platform");
+			JOptionPane.showMessageDialog(null, "Please select BUILD.XML location", "Error:",
+					JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 		String dest = target.getText();
 		String[] command = { "CMD", "/C", "ant clean all" };
@@ -151,12 +153,12 @@ public class BuildAntProjectPanel extends JPanel {
 		}
 
 		public void run() {
-			loadingLabel = new JLabel();
-			loadingLabel.setIcon(new ImageIcon(BuildAntProjectPanel.class.getResource("/images/loading-new.gif")));
-			buttonPanel.add(loadingLabel,BorderLayout.EAST);
+//			loadingLabel = new JLabel();
+//			loadingLabel.setIcon(new ImageIcon(BuildAntProjectPanel.class.getResource("/images/loading-new.gif")));
+//			buttonPanel.add(loadingLabel, BorderLayout.EAST);
+			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
 			textArea.setText("");
-			submit.setEnabled(false);
-			submit.setText("HANG TIGHT");
+			submit.setText("Please wait...");
 			textArea.append("BREATHE IN....., BREATHE OUT......\n");
 			progressBar.setIndeterminate(true);
 			ProcessBuilder probuilder = new ProcessBuilder(command);
@@ -176,8 +178,7 @@ public class BuildAntProjectPanel extends JPanel {
 				}
 				if (finishFlag == true) {
 					progressBar.setIndeterminate(false);
-					submit.setEnabled(true);
-					buttonPanel.remove(loadingLabel);
+					submit.setIcon(null);
 					submit.setText("COMPLETED!!!");
 					Thread.sleep(1000);
 					submit.setText("SUBMIT");
@@ -187,11 +188,10 @@ public class BuildAntProjectPanel extends JPanel {
 				}
 			} catch (IOException e) {
 				progressBar.setIndeterminate(false);
-				submit.setEnabled(true);
-				buttonPanel.remove(loadingLabel);
+				submit.setIcon(null);
 				try {
 					submit.setText("FAILED!!!");
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 					submit.setText("SUBMIT");
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();

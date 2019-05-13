@@ -100,7 +100,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 		statusBarPanel.setPreferredSize(new Dimension(100, 20));
 
 		submit = new JButton("SUBMIT");
-		submit.setPreferredSize(new Dimension(80, 40));
+		submit.setPreferredSize(new Dimension(180, 40));
 		submit.setBackground(Color.BLUE);
 		submit.setToolTipText("Starts Maven Project generation ");
 		submit.setActionCommand("mvngen");
@@ -136,7 +136,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 		inputPanel.add(artifactPanel);
 		inputPanel.add(templatePanel);
 		inputPanel.add(targetPanel);
-		inputPanel.add(submitMainPanel);
+		inputPanel.add(submitMainPanel,BorderLayout.EAST);
 		outputPanel.add(textAreaPanel);
 
 		setEnabled(true);
@@ -199,12 +199,12 @@ public class GenerateMavenProjectPanel extends JPanel {
 		}
 
 		public void run() {
-			loadingLabel = new JLabel();
-			loadingLabel.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
-			submitMainPanel.add(loadingLabel,BorderLayout.EAST);
+//			loadingLabel = new JLabel();
+//			loadingLabel.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+//			submitMainPanel.add(loadingLabel,BorderLayout.EAST);
 			textArea.setText("");
-			submit.setEnabled(false);
-			submit.setText("HANG TIGHT");
+			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+			submit.setText("Please wait...");
 			textArea.append("BREATHE IN....., BREATHE OUT......\n");
 			progressBar.setIndeterminate(true);
 			ProcessBuilder probuilder = new ProcessBuilder(command);
@@ -224,8 +224,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 				}
 				if (finishFlag == true) {
 					progressBar.setIndeterminate(false);
-					submit.setEnabled(true);
-					submitMainPanel.remove(loadingLabel);
+					submit.setIcon(null);
 					submit.setText("COMPLETED!!!");
 					Thread.sleep(1000);
 					submit.setText("SUBMIT");
@@ -235,8 +234,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 				}
 			} catch (IOException e) {
 				progressBar.setIndeterminate(false);
-				submit.setEnabled(true);
-				submitMainPanel.remove(loadingLabel);
+				submit.setIcon(null);
 				try {
 					submit.setText("FAILED!!!");
 					Thread.sleep(3000);
