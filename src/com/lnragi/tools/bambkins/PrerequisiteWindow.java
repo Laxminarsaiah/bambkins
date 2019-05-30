@@ -50,7 +50,7 @@ public class PrerequisiteWindow extends JFrame {
 	}
 
 	private void initializeHomeWindow() {
-		Image icon = Toolkit.getDefaultToolkit().getImage(HomeWindow.class.getResource("/images/favicon.png"));
+		Image icon = Toolkit.getDefaultToolkit().getImage(PrerequisiteWindow.class.getResource("/images/favicon.png"));
 		setBackground(Color.WHITE);
 		setBounds(400, 150, 200, 200);
 		setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 4));

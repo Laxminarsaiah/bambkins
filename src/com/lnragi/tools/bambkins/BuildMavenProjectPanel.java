@@ -35,7 +35,7 @@ public class BuildMavenProjectPanel extends JPanel {
 	private static final long serialVersionUID = 5750960361473796433L;
 	public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	Font font = new Font("Calibri", Font.BOLD, 14);
-	JPanel targetPanel, buttonPanel, textAreaPanel, statusBarPanel;
+	JPanel targetPanel, buttonPanel, textAreaPanel,statusBarPanel;
 	JTextField target;
 	JButton submit, browse;
 	JFileChooser chooser;
@@ -43,14 +43,14 @@ public class BuildMavenProjectPanel extends JPanel {
 	String line;
 	JTextArea textArea;
 	JProgressBar progressBar;
-	JLabel loadingLabel;
+	JLabel loadingLabel, statusBarLabel;
 
 	public BuildMavenProjectPanel() {
 		JPanel inputPanel = new JPanel();
 		JPanel outputPanel = new JPanel();
-		outputPanel.setLayout(new GridLayout(1, 100));
-		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
-		outputPanel.setBorder(BorderFactory.createTitledBorder("      [ OUTPUT ] "));
+		outputPanel.setLayout(new GridLayout(2, 100));
+//		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
+//		outputPanel.setBorder(BorderFactory.createTitledBorder("  [ OUTPUT ] "));
 
 		targetPanel = new JPanel();
 		targetPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
@@ -94,18 +94,11 @@ public class BuildMavenProjectPanel extends JPanel {
 		// Color.blue));
 		// buttonPanel.setBorder(BorderFactory.createTitledBorder(" CLICK ME "));
 
-		statusBarPanel = new JPanel();
-		statusBarPanel.setLayout(new GridLayout(2, 100));
-		statusBarPanel.setPreferredSize(new Dimension(100, 20));
 
-		progressBar = new JProgressBar();
-		progressBar.setPreferredSize(new Dimension(100, 24));
-		statusBarPanel.add(progressBar);
 		buttonPanel.add(submit);
-		// buttonPanel.add(statusBarPanel, BorderLayout.SOUTH);
 
 		textAreaPanel = new JPanel();
-		textAreaPanel.setPreferredSize(screenSize);
+		//textAreaPanel.setPreferredSize(screenSize);
 		textArea = new JTextArea(25, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -118,12 +111,14 @@ public class BuildMavenProjectPanel extends JPanel {
 		textArea.setAutoscrolls(true);
 		textAreaPanel.setAutoscrolls(true);
 		textAreaPanel.add(new JScrollPane(textArea));
-
+		statusBarPanel = new JPanel();
+		statusBarLabel = new JLabel();
+		statusBarPanel.add(statusBarLabel);
 		inputPanel.add(targetPanel);
 		inputPanel.add(buttonPanel);
 		outputPanel.add(textAreaPanel);
+		outputPanel.add(statusBarPanel,BorderLayout.SOUTH);
 
-		setEnabled(true);
 		setPreferredSize(screenSize);
 		add(inputPanel);
 		add(outputPanel);
@@ -160,7 +155,6 @@ public class BuildMavenProjectPanel extends JPanel {
 			textArea.setText("");
 			submit.setText("Please wait...");
 			textArea.append("BREATHE IN....., BREATHE OUT......\n");
-			progressBar.setIndeterminate(true);
 			ProcessBuilder probuilder = new ProcessBuilder(command);
 			probuilder.directory(new File(dest));
 			Process process;
@@ -170,14 +164,19 @@ public class BuildMavenProjectPanel extends JPanel {
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);
 				boolean finishFlag = false;
+				statusBarLabel.setText("Running...");
 				while ((line = br.readLine()) != null) {
 					finishFlag = false;
-					textArea.append(String.valueOf((line)));
-					textArea.append("\n");
+					if (line.toString().indexOf("Progress") >= 0) {
+						statusBarLabel.setText(line);
+					} else {
+						textArea.append(line);
+						textArea.append("\n");
+					}
 					finishFlag = true;
 				}
 				if (finishFlag == true) {
-					progressBar.setIndeterminate(false);
+					statusBarLabel.setText("");
 					submit.setIcon(null);
 					submit.setText("COMPLETED");
 					Thread.sleep(1000);
@@ -187,8 +186,8 @@ public class BuildMavenProjectPanel extends JPanel {
 							icon);
 				}
 			} catch (IOException e) {
-				progressBar.setIndeterminate(false);
 				submit.setIcon(null);
+				statusBarLabel.setText("");
 				try {
 					submit.setText("FAILED!!!");
 					Thread.sleep(1000);

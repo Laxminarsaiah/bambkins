@@ -20,6 +20,7 @@ public class RunPreRequisites {
 	JProgressBar progressBar;
 	JPanel textAreaPanel;
 	JLabel textAreaLabel;
+	ImageIcon icon;
 
 	public RunPreRequisites() {
 		textAreaLabel = new JLabel();
@@ -30,8 +31,7 @@ public class RunPreRequisites {
 		progressBar.setForeground(new Color(0, 100, 0));
 		textAreaLabel.add(progressBar, BorderLayout.SOUTH);
 		new TextAreaThread().start();
-//		ImageIcon icon = new ImageIcon(BuildMavenProjectPanel.class.getResource("/images/wait.gif"));
-		JOptionPane.showMessageDialog(null, textAreaLabel, "Running Pre requisites:", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, textAreaLabel, "Running Pre requisites:", JOptionPane.PLAIN_MESSAGE);
 	}
 
 	class TextAreaThread extends Thread {
@@ -41,6 +41,8 @@ public class RunPreRequisites {
 		}
 
 		public void run() {
+			icon = new ImageIcon(RunPreRequisites.class.getResource("/images/wait.gif"));
+			textAreaLabel.setIcon(icon);
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("CHECKING FOR JAVA", "JAVA_HOME");
 			map.put("CHECKING FOR MAVEN", "MAVEN_HOME");
@@ -59,12 +61,12 @@ public class RunPreRequisites {
 					if (str != null) {
 						textAreaLabel.setText(entry.getKey() + ": ");
 						// textArea.append(entry.getKey() + " : SUCCESS ");
-						textAreaLabel.setText(entry.getKey() + ":SUCCESS");
+						textAreaLabel.setText(entry.getKey() + ":  SUCCESS");
 						Thread.sleep(1000);
 					} else if (str == null) {
 						error.add(entry.getValue());
 						// textArea.append(entry.getKey() + " : FAILED");
-						textAreaLabel.setText(entry.getKey() + ":FAILED ");
+						textAreaLabel.setText(entry.getKey() + ":  FAILED ");
 						Thread.sleep(1000);
 					}
 					i++;
@@ -72,10 +74,14 @@ public class RunPreRequisites {
 				}
 				if (error.size() == 0) {
 					// textArea.append("Ready to GO....");
+					icon = new ImageIcon(RunPreRequisites.class.getResource("/images/ok1.png"));
+					textAreaLabel.setIcon(icon);
 					textAreaLabel.setText("Ready to GO....");
 					Thread.sleep(3000);
 				} else if (error.size() > 0) {
-					textAreaLabel.setText("Install Required Appliactions.");
+					icon = new ImageIcon(RunPreRequisites.class.getResource("/images/prereq_error.png"));
+					textAreaLabel.setIcon(icon);
+					textAreaLabel.setText("Install Required Application(s).");
 					Thread.sleep(1000);
 				}
 			} catch (Exception e) {

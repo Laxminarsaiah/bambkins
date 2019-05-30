@@ -46,15 +46,15 @@ public class GenerateMavenProjectPanel extends JPanel {
 	String line;
 	JTextArea textArea;
 	JProgressBar progressBar;
-	JLabel loadingLabel;
+	JLabel loadingLabel,statusBarLabel;
 
 	public GenerateMavenProjectPanel() {
 		JPanel inputPanel = new JPanel();
 
 		JPanel outputPanel = new JPanel();
-		outputPanel.setLayout(new GridLayout(1, 100));
-		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
-		outputPanel.setBorder(BorderFactory.createTitledBorder("      [ OUTPUT ] "));
+		outputPanel.setLayout(new GridLayout(2, 100));
+//		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
+//		outputPanel.setBorder(BorderFactory.createTitledBorder("  [ OUTPUT ] "));
 		grpPanel = new JPanel();
 		grpPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		grpPanel.setBorder(BorderFactory.createTitledBorder(" ENTER GROUP ID "));
@@ -118,7 +118,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 		// submitMainPanel.add(statusBarPanel);
 
 		textAreaPanel = new JPanel();
-		textAreaPanel.setPreferredSize(screenSize);
+		//textAreaPanel.setPreferredSize(screenSize);
 		textArea = new JTextArea(25, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -131,15 +131,18 @@ public class GenerateMavenProjectPanel extends JPanel {
 		textArea.setAutoscrolls(true);
 		textAreaPanel.setAutoscrolls(true);
 		textAreaPanel.add(new JScrollPane(textArea));
-
+		
+		statusBarPanel = new JPanel();
+		statusBarLabel = new JLabel();
+		statusBarPanel.add(statusBarLabel);
+		
 		inputPanel.add(grpPanel);
 		inputPanel.add(artifactPanel);
 		inputPanel.add(templatePanel);
 		inputPanel.add(targetPanel);
-		inputPanel.add(submitMainPanel,BorderLayout.EAST);
+		inputPanel.add(submitMainPanel, BorderLayout.EAST);
 		outputPanel.add(textAreaPanel);
-
-		setEnabled(true);
+		outputPanel.add(statusBarPanel,BorderLayout.SOUTH);
 		setPreferredSize(screenSize);
 		add(inputPanel);
 		add(outputPanel);
@@ -216,14 +219,19 @@ public class GenerateMavenProjectPanel extends JPanel {
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);
 				boolean finishFlag = false;
+				statusBarLabel.setText("Running...");
 				while ((line = br.readLine()) != null) {
 					finishFlag = false;
-					textArea.append(String.valueOf((line)));
-					textArea.append("\n");
+					if (line.toString().indexOf("Progress") >= 0) {
+						statusBarLabel.setText(line);
+					} else {
+						textArea.append(line);
+						textArea.append("\n");
+					}
 					finishFlag = true;
 				}
 				if (finishFlag == true) {
-					progressBar.setIndeterminate(false);
+					statusBarLabel.setText("");
 					submit.setIcon(null);
 					submit.setText("COMPLETED!!!");
 					Thread.sleep(1000);
@@ -233,8 +241,8 @@ public class GenerateMavenProjectPanel extends JPanel {
 							JOptionPane.PLAIN_MESSAGE, icon);
 				}
 			} catch (IOException e) {
-				progressBar.setIndeterminate(false);
 				submit.setIcon(null);
+				statusBarLabel.setText("");
 				try {
 					submit.setText("FAILED!!!");
 					Thread.sleep(3000);

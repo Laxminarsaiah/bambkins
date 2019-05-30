@@ -291,6 +291,7 @@ public class PuttyWindow extends JFrame {
 				progressText.setText("Connected!");
 				Thread.sleep(1000);
 				progressText.setText("Connected!!! [" + username + "@" + ip + "]");
+				setTitle(username + "@" + ip);
 				button.setText("LOGIN");
 				progressText.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/conn.png")));
 			} catch (InterruptedException | JSchException e) {
@@ -435,12 +436,6 @@ public class PuttyWindow extends JFrame {
 			setPreferredSize(new Dimension(750, 400));
 			setIconImage(icon);
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			if (!ip.getText().equalsIgnoreCase("") && !username.getText().equalsIgnoreCase("")) {
-				setTitle("MONIT SUMMARY");
-			} else {
-				setTitle(username.getText() + "@" + ip.getText());
-			}
-
 			setVisible(true);
 			setAlwaysOnTop(true);
 			pack();

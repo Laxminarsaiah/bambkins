@@ -1,6 +1,5 @@
 package com.lnragi.tools.bambkins;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -51,8 +50,8 @@ public class BuildAntProjectPanel extends JPanel {
 
 		JPanel outputPanel = new JPanel();
 		outputPanel.setLayout(new GridLayout(1, 100));
-		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
-		outputPanel.setBorder(BorderFactory.createTitledBorder("      [ OUTPUT ] "));
+//		outputPanel.setBorder(BorderFactory.createMatteBorder(45, 8, 12, 8, Color.blue));
+//		outputPanel.setBorder(BorderFactory.createTitledBorder("  [ OUTPUT ] "));
 
 		targetPanel = new JPanel();
 		targetPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));

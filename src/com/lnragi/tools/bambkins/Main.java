@@ -20,9 +20,9 @@ public class Main {
 	public static void main(String[] args) {
 		JWindow window = new JWindow();
 		JProgressBar progressBar = new JProgressBar();
-		progressBar.setPreferredSize(new Dimension(498, 15));
+		progressBar.setPreferredSize(new Dimension(498, 14));
 		progressBar.setBackground(Color.WHITE);
-		progressBar.setForeground(new Color(0, 100, 0));
+		progressBar.setForeground(new Color(50,205,50));
 		JLabel jl = new JLabel("Loading...", SwingConstants.CENTER);
 		ImageIcon icon = new ImageIcon(Main.class.getResource("/images/home2.jpg"));
 		jl.setIcon(icon);
@@ -34,7 +34,6 @@ public class Main {
 			String[] task = { "Loading application....", "Framing...", "Decorating....","Finishing..."};
 			for (int i = 0; i < task.length; i++) {
 				progressBar.setValue(i*33);
-				progressBar.setStringPainted(true);
 				progressBar.setString(task[i]);
 				Thread.sleep(1000);
 			}
