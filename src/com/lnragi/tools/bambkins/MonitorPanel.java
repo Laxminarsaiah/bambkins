@@ -28,7 +28,7 @@ public class MonitorPanel extends JPanel {
 //		submitMainPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 //		submitMainPanel.setBorder(BorderFactory.createTitledBorder(" Open putty here "));
 		submit = new JButton("Open");
-		ImageIcon icon = new ImageIcon(PuttyWindow.class.getResource("/images/add_correction.png"));
+		ImageIcon icon = new ImageIcon(PuttyWindow.class.getResource("/images/add.png"));
 		submit.setIcon(icon);
 		submit.setPreferredSize(new Dimension(180, 40));
 		submit.setBackground(Color.BLUE);
@@ -36,6 +36,7 @@ public class MonitorPanel extends JPanel {
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new PuttyWindow();
+				
 			}
 		});
 		

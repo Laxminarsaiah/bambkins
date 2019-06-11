@@ -55,7 +55,7 @@ public class BuildMavenProjectPanel extends JPanel {
 		targetPanel = new JPanel();
 		targetPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		targetPanel.setBorder(BorderFactory.createTitledBorder(" SELECT POM.XML LOCATION "));
-		target = new JTextField(100);
+		target = new JTextField(114);
 		target.setToolTipText("Target directory is mandatory!!!");
 		targetPanel.add(target);
 		browse = new JButton("BROWSE");
@@ -99,13 +99,15 @@ public class BuildMavenProjectPanel extends JPanel {
 
 		textAreaPanel = new JPanel();
 		//textAreaPanel.setPreferredSize(screenSize);
-		textArea = new JTextArea(25, 146);
+		textArea = new JTextArea(26, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
 		textArea.setBorder(null);
 		textArea.setToolTipText("You can see console output here...");
 		textArea.setEditable(false);
+		textArea.setBackground(new Color(128,0,128));
+		textArea.setForeground(Color.WHITE);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		textArea.setAutoscrolls(true);
@@ -151,7 +153,7 @@ public class BuildMavenProjectPanel extends JPanel {
 //			loadingLabel = new JLabel();
 //			loadingLabel.setIcon(new ImageIcon(BuildMavenProjectPanel.class.getResource("/images/loading-new.gif")));
 //			buttonPanel.add(loadingLabel);
-			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loader.gif")));
 			textArea.setText("");
 			submit.setText("Please wait...");
 			textArea.append("BREATHE IN....., BREATHE OUT......\n");

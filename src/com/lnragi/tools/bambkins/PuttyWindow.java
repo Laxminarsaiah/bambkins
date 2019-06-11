@@ -10,6 +10,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -17,8 +19,10 @@ import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -53,8 +57,8 @@ public class PuttyWindow extends JFrame {
 	String line;
 	JPanel monitSummaryTopPanel, monitTextAreaPanel, monitSummaryBottomPanel, monitSummaryButtonPanel,
 			serviceInputPanel;
-	JButton cancel, refresh;
-	JTextArea monitTextArea;
+	JButton cancel, refresh, savedsessions;
+	JTextArea monitTextArea, monitMomLogTextArea;
 
 	public PuttyWindow() {
 		progressText = new JLabel();
@@ -62,19 +66,21 @@ public class PuttyWindow extends JFrame {
 		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		initializeHomeWindow();
 		topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(3, 10));
-		topPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
+		topPanel.setLayout(new GridLayout(2, 20));
+		topPanel.setBorder(BorderFactory.createMatteBorder(15, 8, 12, 8, Color.blue));
 		topPanel.setBorder(BorderFactory.createTitledBorder(" MONITOR "));
 
 		textAreaPanel = new JPanel();
 		textAreaPanel.setPreferredSize(screenSize);
-		textArea = new JTextArea(25, 146);
+		textArea = new JTextArea(28, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
 		textArea.setBorder(null);
 		textArea.setToolTipText("You can see console output here...");
 		textArea.setEditable(false);
+		textArea.setBackground(new Color(128, 0, 128));
+		textArea.setForeground(Color.WHITE);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		textArea.setAutoscrolls(true);
@@ -82,7 +88,6 @@ public class PuttyWindow extends JFrame {
 		textAreaPanel.add(new JScrollPane(textArea));
 
 		inputPanel = new JPanel();
-		// bottomPanel.setLayout(new GridLayout(5, 10));
 		ipLbl = new JLabel("Hostname");
 		ip = new JTextField(20);
 		ipLbl.setLabelFor(ip);
@@ -111,14 +116,26 @@ public class PuttyWindow extends JFrame {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new DaemonThread().start();
-				new PuttyLoginThread(ip.getText(), username.getText(), password.getText(),
-						Integer.parseInt(port.getText())).start();
+				try {
+					if (ip.getText().equals("") || username.getText().equals("") || password.getText().equals("")
+							|| port.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "Please enter details", "Error:",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					new FileCreater().saveSession(ip.getText(), username.getText(), password.getText(), port.getText());
+					new PuttyLoginThread(ip.getText(), username.getText(), password.getText(),
+							Integer.parseInt(port.getText())).start();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
-		inputPanel.add(button);
 
+		inputPanel.add(button);
 		centerPanel = new JPanel();
 		monitButton = new JButton("MONIT SUMMARY");
+		monitButton.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/console_view.png")));
 		monitButton.setBackground(Color.BLUE);
 		monitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -135,6 +152,7 @@ public class PuttyWindow extends JFrame {
 		});
 
 		startService = new JButton("START SERVICE");
+		startService.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/run_exc.png")));
 		startService.setBackground(Color.BLUE);
 		startService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -157,6 +175,7 @@ public class PuttyWindow extends JFrame {
 		});
 
 		stopService = new JButton("STOP SERVICE");
+		stopService.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/stop.png")));
 		stopService.setBackground(Color.BLUE);
 		stopService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -178,6 +197,7 @@ public class PuttyWindow extends JFrame {
 		});
 
 		restartService = new JButton("RESTART SERVICE");
+		restartService.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/external_tools.png")));
 		restartService.setBackground(Color.BLUE);
 		restartService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -198,29 +218,64 @@ public class PuttyWindow extends JFrame {
 			}
 		});
 		momlogButton = new JButton("MOM LOGS");
+		momlogButton.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/copy_edit.png")));
 		momlogButton.setBackground(Color.BLUE);
 		momlogButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new DaemonThread().start();
+				String command = "tail -600f /dumps/mom.log.0";
+				new MomLogTextAreaThread(command).start();
+
 			}
 		});
 
 		udsAgentButton = new JButton("UDS AGEN LOGS");
+		udsAgentButton.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/copy_edit.png")));
 		udsAgentButton.setBackground(Color.BLUE);
 		udsAgentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new DaemonThread().start();
 			}
 		});
+
+		savedsessions = new JButton("SAVED SESSIONS");
+		savedsessions.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/star.png")));
+		savedsessions.setBackground(Color.BLUE);
+		savedsessions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String[] sessions = new FileCreater().readSessions();
+					if (sessions.length == 0) {
+						JOptionPane.showMessageDialog(null, "No saved session(s) available", "Info",
+								JOptionPane.PLAIN_MESSAGE);
+					} else {
+						JList<String> jlist = new JList<String>(sessions);
+						JOptionPane.showMessageDialog(null, jlist, "Select Saved Sessions:", JOptionPane.PLAIN_MESSAGE);
+						String slctdItem = jlist.getSelectedValue();
+						String sltcdSession = new FileCreater().readSession(slctdItem);
+						String[] splits = sltcdSession.split(",");
+						ip.setText(splits[0]);
+						username.setText(splits[1]);
+						password.setText(splits[2]);
+						port.setText(splits[3]);
+					}
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
+		centerPanel.add(progressText);
 		centerPanel.add(monitButton);
 		centerPanel.add(startService);
 		centerPanel.add(stopService);
 		centerPanel.add(restartService);
 		centerPanel.add(momlogButton);
-		centerPanel.add(udsAgentButton);
+
+		centerPanel.add(savedsessions);
+//		centerPanel.add(udsAgentButton);
 
 		topPanel.add(inputPanel);
-		topPanel.add(progressText);
 		topPanel.add(centerPanel);
 		bottomPanel = new JPanel();
 		bottomPanel.add(textAreaPanel);
@@ -229,7 +284,8 @@ public class PuttyWindow extends JFrame {
 	}
 
 	private void initializeHomeWindow() {
-		Image icon = Toolkit.getDefaultToolkit().getImage(HomeWindow.class.getResource("/images/favicon.png"));
+		new DaemonThread().start();
+		Image icon = Toolkit.getDefaultToolkit().getImage(HomeWindow.class.getResource("/images/icon.png"));
 		setBackground(Color.WHITE);
 		setPreferredSize(screenSize);
 		setIconImage(icon);
@@ -269,6 +325,7 @@ public class PuttyWindow extends JFrame {
 		}
 
 		public void run() {
+			new DaemonThread().start();
 			try {
 				ImageIcon icon = new ImageIcon(PuttyWindow.class.getResource("/images/wait.gif"));
 				// button.setIcon(icon);
@@ -312,6 +369,7 @@ public class PuttyWindow extends JFrame {
 		}
 
 		public void run() {
+			new DaemonThread().start();
 			monitTextArea.setText("");
 			try {
 				if (session == null) {
@@ -343,6 +401,7 @@ public class PuttyWindow extends JFrame {
 		}
 
 		public void run() {
+			new DaemonThread().start();
 			try {
 				if (session == null) {
 					JOptionPane.showMessageDialog(null, "No putty session available", "Error:",
@@ -351,7 +410,7 @@ public class PuttyWindow extends JFrame {
 				}
 				Channel channel = session.openChannel("exec");
 				((ChannelExec) channel).setCommand(command);
-				InputStream in = channel.getInputStream();
+				channel.getInputStream();
 				((ChannelExec) channel).setErrStream(System.err);
 				channel.connect();
 			} catch (Exception e) {
@@ -387,6 +446,7 @@ public class PuttyWindow extends JFrame {
 		public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 		public MonitSummaryFrame() {
+			new DaemonThread().start();
 			initializeHomeWindow();
 			monitSummaryTopPanel = new JPanel();
 			monitTextAreaPanel = new JPanel();
@@ -398,6 +458,8 @@ public class PuttyWindow extends JFrame {
 			monitTextArea.setBorder(null);
 			monitTextArea.setToolTipText("You can see console output here...");
 			monitTextArea.setEditable(false);
+			monitTextArea.setBackground(new Color(128, 0, 128));
+			monitTextArea.setForeground(Color.WHITE);
 			monitTextArea.setLineWrap(true);
 			monitTextArea.setWrapStyleWord(true);
 			monitTextArea.setAutoscrolls(true);
@@ -406,6 +468,7 @@ public class PuttyWindow extends JFrame {
 			monitSummaryTopPanel.add(monitTextAreaPanel);
 			monitSummaryBottomPanel = new JPanel();
 			cancel = new JButton("CANCEL");
+			cancel.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/message_error.png")));
 			cancel.setBackground(Color.BLUE);
 			cancel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -414,6 +477,7 @@ public class PuttyWindow extends JFrame {
 			});
 
 			refresh = new JButton("REFRESH");
+			refresh.setIcon(new ImageIcon(PuttyWindow.class.getResource("/images/refresh.png")));
 			refresh.setBackground(Color.BLUE);
 			refresh.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -430,7 +494,7 @@ public class PuttyWindow extends JFrame {
 		}
 
 		private void initializeHomeWindow() {
-			Image icon = Toolkit.getDefaultToolkit().getImage(HomeWindow.class.getResource("/images/favicon.png"));
+			Image icon = Toolkit.getDefaultToolkit().getImage(HomeWindow.class.getResource("/images/icon.png"));
 			setBackground(Color.WHITE);
 			setBounds(400, 150, 200, 200);
 			setPreferredSize(new Dimension(750, 400));
@@ -438,6 +502,7 @@ public class PuttyWindow extends JFrame {
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			setVisible(true);
 			setAlwaysOnTop(true);
+			setTitle("Monit Summary:");
 			pack();
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -446,5 +511,40 @@ public class PuttyWindow extends JFrame {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	class MomLogTextAreaThread extends Thread {
+		private String command;
+
+		public MomLogTextAreaThread(String command) {
+			super();
+			this.command = command;
+		}
+
+		public void run() {
+			new DaemonThread().start();
+			textArea.setText("");
+			try {
+				if (session == null) {
+					JOptionPane.showMessageDialog(null, "No putty session available", "Error:",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				Channel channel = session.openChannel("exec");
+				((ChannelExec) channel).setCommand(command);
+				InputStream in = channel.getInputStream();
+				((ChannelExec) channel).setErrStream(System.err);
+				channel.connect();
+				InputStreamReader isr = new InputStreamReader(in);
+				BufferedReader br = new BufferedReader(isr);
+				while ((line = br.readLine()) != null) {
+					textArea.append(String.valueOf((line)));
+					textArea.append("\n");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 }

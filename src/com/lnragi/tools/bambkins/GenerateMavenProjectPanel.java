@@ -58,14 +58,14 @@ public class GenerateMavenProjectPanel extends JPanel {
 		grpPanel = new JPanel();
 		grpPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		grpPanel.setBorder(BorderFactory.createTitledBorder(" ENTER GROUP ID "));
-		groupId = new JTextField(28);
+		groupId = new JTextField(29);
 		groupId.setToolTipText("Group id is mandatory!!!");
 		grpPanel.add(groupId);
 
 		artifactPanel = new JPanel();
 		artifactPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		artifactPanel.setBorder(BorderFactory.createTitledBorder(" ENTER ARTIFACT ID "));
-		artifactId = new JTextField(28);
+		artifactId = new JTextField(29);
 		artifactId.setToolTipText("Artfact id is mandatory!!!");
 		artifactPanel.add(artifactId);
 
@@ -85,7 +85,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 		targetPanel = new JPanel();
 		targetPanel.setBorder(BorderFactory.createMatteBorder(35, 8, 12, 8, Color.blue));
 		targetPanel.setBorder(BorderFactory.createTitledBorder(" ENTER DESTINATION "));
-		target = new JTextField(28);
+		target = new JTextField(35);
 		target.setToolTipText("Target directory is mandatory!!!");
 		targetPanel.add(target);
 
@@ -119,11 +119,13 @@ public class GenerateMavenProjectPanel extends JPanel {
 
 		textAreaPanel = new JPanel();
 		//textAreaPanel.setPreferredSize(screenSize);
-		textArea = new JTextArea(25, 146);
+		textArea = new JTextArea(26, 146);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
 		textArea.setBorder(null);
+		textArea.setBackground(new Color(128,0,128));
+		textArea.setForeground(Color.WHITE);
 		textArea.setToolTipText("You can see console output here...");
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
@@ -206,7 +208,7 @@ public class GenerateMavenProjectPanel extends JPanel {
 //			loadingLabel.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
 //			submitMainPanel.add(loadingLabel,BorderLayout.EAST);
 			textArea.setText("");
-			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loading-new.gif")));
+			submit.setIcon(new ImageIcon(GenerateMavenProjectPanel.class.getResource("/images/loader.gif")));
 			submit.setText("Please wait...");
 			textArea.append("BREATHE IN....., BREATHE OUT......\n");
 			progressBar.setIndeterminate(true);
